@@ -14,5 +14,8 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "jsdom": "^24.1.0"
   }
 }
