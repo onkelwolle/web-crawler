@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom';
-export { normalizeURL, getURLsFromHTML };
+export { normalizeURL, getURLsFromHTML, crawlPage };
 
 function normalizeURL(url) {
         const urlObj = new URL(url);
@@ -21,4 +21,30 @@ function getURLsFromHTML(htmlBody, baseURL) {
         });
 
         return urls;
+}
+
+
+async function crawlPage(url) {
+        console.log(`crawling: ${url}`);
+
+        let response;
+        try {
+                response = await fetch(url);
+        } catch (err) {
+                console.log(`Got Network Error: ${err.message}`);
+                return;
+        }
+
+        if (response.status > 399) {
+                console.log(`Got http error: ${response.status} ${response.statusText}`);
+                return;
+        }
+
+        const contentType = response.headers.get('content-type');
+
+        if (!contentType || !contentType.includes('text/html')) {
+                console.log(`Got none html response: ${contentType}`);
+                return;
+        }
+        console.log(await response.text());
 }

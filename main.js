@@ -1,4 +1,5 @@
 import { argv } from 'node:process';
+import { crawlPage } from './crawl.js';
 
 function main() {
 
@@ -8,6 +9,7 @@ function main() {
         }
 
         console.log(`Base URL is: ${argv[2]}`);
+        crawlPage(argv[2]);
 }
 
 main()
