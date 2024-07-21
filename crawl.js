@@ -23,8 +23,34 @@ function getURLsFromHTML(htmlBody, baseURL) {
         return urls;
 }
 
+async function crawlPage(baseURL, currentURL = baseURL, pages = {}) {
 
-async function crawlPage(url) {
+        const currentURLObj = new URL(currentURL);
+        const baseURLObj = new URL(baseURL);
+
+        if (baseURLObj.hostname !== currentURLObj.hostname) {
+                return pages;
+        }
+
+        const normalizedCurrentURL = normalizeURL(currentURL);
+
+        if (pages[normalizedCurrentURL] > 0) {
+                pages[normalizedCurrentURL]++;
+                return pages;
+        }
+
+        pages[normalizedCurrentURL] = 1;
+        const crawledHtml = await fetchHtml(currentURL);
+
+        const urlList = getURLsFromHTML(crawledHtml, baseURL);
+
+        for (const url of urlList) {
+                pages = await crawlPage(baseURL, url, pages);
+        }
+        return pages;
+}
+
+async function fetchHtml(url) {
         console.log(`crawling: ${url}`);
 
         let response;
@@ -46,5 +72,6 @@ async function crawlPage(url) {
                 console.log(`Got none html response: ${contentType}`);
                 return;
         }
-        console.log(await response.text());
+
+        return response.text();
 }
