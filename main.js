@@ -1,5 +1,6 @@
 import { argv } from 'node:process';
 import { crawlPage } from './crawl.js';
+import { printReport } from './report.js';
 
 async function main() {
 
@@ -10,8 +11,7 @@ async function main() {
 
         console.log(`Base URL is: ${argv[2]}`);
         const pages = await crawlPage(argv[2]);
-        console.log(pages);
-
+        printReport(pages);
 }
 
 main()
